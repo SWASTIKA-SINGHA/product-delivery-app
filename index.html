@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>FastKart</title>
   <style>
     body {
@@ -17,16 +17,24 @@
       padding: 20px;
       color: white;
       text-align: center;
+      position: relative;
+    }
+
+    .cart-count {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 16px;
+      background: white;
+      color: black;
+      padding: 5px 10px;
+      border-radius: 20px;
     }
 
     .container {
       max-width: 960px;
       margin: 20px auto;
       padding: 0 20px;
-    }
-
-    h2 {
-      margin-bottom: 10px;
     }
 
     .product-container {
@@ -94,88 +102,132 @@
   <header>
     <h1>🛒 FastKart</h1>
     <p>Your one-stop delivery shop</p>
+    <div class="cart-count" id="cartCount">Cart: 0</div>
   </header>
 
   <div class="container">
     <h2>Our Products</h2>
-    <div class="product-container">
-      
+    <div class="product-container" id="productList">
+
+      <!-- Product Cards -->
       <div class="product-card">
         <img src="lipstick.jpg" alt="Lipstick">
         <h3>Lipstick</h3>
         <p>₹199</p>
-        <button>Add to Cart</button>
+        <button onclick="addToCart('Lipstick')">Add to Cart</button>
       </div>
 
       <div class="product-card">
         <img src="shampoo.jpg" alt="Shampoo">
         <h3>Shampoo</h3>
         <p>₹149</p>
-        <button>Add to Cart</button>
+        <button onclick="addToCart('Shampoo')">Add to Cart</button>
       </div>
 
       <div class="product-card">
         <img src="facialkit.jpg" alt="Facial Kit">
         <h3>Facial Kit</h3>
         <p>₹349</p>
-        <button>Add to Cart</button>
+        <button onclick="addToCart('Facial Kit')">Add to Cart</button>
       </div>
 
       <div class="product-card">
         <img src="maggi.jpg" alt="Maggi">
         <h3>Maggi</h3>
         <p>₹40</p>
-        <button>Add to Cart</button>
+        <button onclick="addToCart('Maggi')">Add to Cart</button>
       </div>
 
       <div class="product-card">
-        <img src="toblerone.jpg" alt="Toblerone Chocolate">
+        <img src="toblerone.jpg" alt="Toblerone">
         <h3>Toblerone</h3>
         <p>₹120</p>
-        <button>Add to Cart</button>
+        <button onclick="addToCart('Toblerone')">Add to Cart</button>
       </div>
 
       <div class="product-card">
         <img src="book.jpg" alt="Book">
         <h3>Book</h3>
         <p>₹250</p>
-        <button>Add to Cart</button>
+        <button onclick="addToCart('Book')">Add to Cart</button>
       </div>
 
       <div class="product-card">
         <img src="pencil.jpg" alt="Pencil">
         <h3>Pencil</h3>
         <p>₹10</p>
-        <button>Add to Cart</button>
+        <button onclick="addToCart('Pencil')">Add to Cart</button>
       </div>
 
       <div class="product-card">
         <img src="Men's_tshirt.jpg" alt="Men's T-Shirt">
         <h3>Men's T-Shirt</h3>
         <p>₹499</p>
-        <button>Add to Cart</button>
+        <button onclick="addToCart('Men\'s T-Shirt')">Add to Cart</button>
       </div>
 
       <div class="product-card">
         <img src="women's_dress.jpg" alt="Women's Dress">
         <h3>Women's Dress</h3>
         <p>₹699</p>
-        <button>Add to Cart</button>
+        <button onclick="addToCart('Women\'s Dress')">Add to Cart</button>
       </div>
 
     </div>
 
     <div class="checkout">
       <h2>Checkout</h2>
-      <input type="text" placeholder="Enter Delivery Address">
-      <select>
-        <option selected disabled>Select Payment Method</option>
+      <input type="text" id="address" placeholder="Enter Delivery Address">
+      <select id="paymentMethod">
+        <option selected disabled value="">Select Payment Method</option>
         <option value="cod">Cash on Delivery</option>
         <option value="online">Online Payment</option>
       </select>
-      <button class="buy-btn">Buy Now</button>
+      <button class="buy-btn" onclick="buyNow()">Buy Now</button>
     </div>
   </div>
+
+  <script>
+    let cart = [];
+
+    function addToCart(item) {
+      cart.push(item);
+      document.getElementById('cartCount').innerText = `Cart: ${cart.length}`;
+      alert(`${item} added to cart!`);
+    }
+
+    function buyNow() {
+      const address = document.getElementById('address').value.trim();
+      const payment = document.getElementById('paymentMethod').value;
+
+      if (cart.length === 0) {
+        alert("❌ Your cart is empty!");
+        return;
+      }
+
+      if (!address) {
+        alert("❌ Please enter a delivery address.");
+        return;
+      }
+
+      if (!payment) {
+        alert("❌ Please select a payment method.");
+        return;
+      }
+
+      let paymentMsg = payment === 'cod'
+        ? '📦 Your order will be delivered with Cash on Delivery!'
+        : '💳 Proceeding to online payment... (simulated)';
+
+      alert(`✅ Order placed successfully!\n\n🛍️ Items: ${cart.join(', ')}\n🏠 Address: ${address}\n💰 Payment: ${payment.toUpperCase()}\n\n${paymentMsg}`);
+
+      // Reset everything
+      cart = [];
+      document.getElementById('cartCount').innerText = 'Cart: 0';
+      document.getElementById('address').value = '';
+      document.getElementById('paymentMethod').selectedIndex = 0;
+    }
+  </script>
 
 </body>
 </html>
