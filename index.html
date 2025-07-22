@@ -1,164 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FastKart - Product Delivery</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
-      background: #f2f2f2;
+      background: #f4f4f4;
     }
-
-    h1, h2 {
-      text-align: center;
-      color: #333;
-    }
-
-    .category {
-      margin: 40px 0 20px;
-      font-size: 24px;
-      color: #444;
-      border-bottom: 2px solid #ccc;
+    h2 {
+      border-bottom: 2px solid #ddd;
       padding-bottom: 5px;
+      margin-top: 40px;
     }
-
     .product-container {
       display: flex;
       flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
+      gap: 15px;
+      margin-bottom: 20px;
     }
-
     .product {
       background: white;
-      padding: 10px;
       border-radius: 10px;
-      width: 180px;
+      box-shadow: 0 0 5px #aaa;
+      padding: 10px;
+      width: 150px;
       text-align: center;
-      box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
     }
-
     .product img {
       width: 100px;
       height: 100px;
       object-fit: cover;
+      border-radius: 5px;
     }
-
-    .buy-section {
-      margin: 40px auto;
-      max-width: 400px;
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
-    }
-
-    .buy-section textarea {
-      width: 100%;
-      padding: 8px;
-    }
-
-    .buy-section button {
-      margin-top: 15px;
-      padding: 10px 20px;
-      font-size: 16px;
-      background: green;
+    .product button {
+      margin-top: 5px;
+      padding: 5px 10px;
+      background: #28a745;
       color: white;
       border: none;
+      border-radius: 5px;
       cursor: pointer;
+    }
+    .checkout {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 5px #aaa;
+      margin-top: 30px;
+    }
+    #cartItems {
+      margin-bottom: 10px;
     }
   </style>
 </head>
 <body>
-
   <h1>🛒 Welcome to FastKart</h1>
 
-  <!-- Beauty Products -->
-  <div class="category">💄 Beauty Products</div>
+  <h2>💄 Beauty Products</h2>
   <div class="product-container">
     <div class="product">
-      <img src="https://i.imgur.com/L5lK45P.jpg" alt="Lipstick">
+      <img src="https://i.imgur.com/qMwrGIg.jpg" alt="Lipstick">
       <p>Lipstick</p>
+      <button onclick="addToCart('Lipstick')">Add to Cart</button>
     </div>
     <div class="product">
-      <img src="https://i.imgur.com/Olnb2kM.jpg" alt="Shampoo">
+      <img src="https://i.imgur.com/jFgfYWW.jpg" alt="Shampoo">
       <p>Shampoo</p>
+      <button onclick="addToCart('Shampoo')">Add to Cart</button>
     </div>
     <div class="product">
-      <img src="https://i.imgur.com/k3w2YUZ.jpg" alt="Facial Kit">
+      <img src="https://i.imgur.com/yqkqRnM.jpg" alt="Facial Kit">
       <p>Facial Kit</p>
+      <button onclick="addToCart('Facial Kit')">Add to Cart</button>
     </div>
   </div>
 
-  <!-- Food Items -->
-  <div class="category">🍜 Food Items</div>
+  <h2>🍜 Food Items</h2>
   <div class="product-container">
     <div class="product">
-      <img src="https://i.imgur.com/L9NlvYw.jpg" alt="Cup Noodles">
+      <img src="https://i.imgur.com/UqR3JK1.jpg" alt="Cup Noodles">
       <p>Cup Noodles</p>
+      <button onclick="addToCart('Cup Noodles')">Add to Cart</button>
     </div>
     <div class="product">
-      <img src="https://i.imgur.com/yBU8fO3.jpg" alt="Maggie">
+      <img src="https://i.imgur.com/KZvL6iC.jpg" alt="Maggie">
       <p>Maggie</p>
+      <button onclick="addToCart('Maggie')">Add to Cart</button>
     </div>
   </div>
 
-  <!-- Chocolates -->
-  <div class="category">🍫 Chocolates</div>
+  <h2>🍫 Chocolates</h2>
   <div class="product-container">
     <div class="product">
-      <img src="https://i.imgur.com/xb3c9Pa.jpg" alt="Toblerone">
+      <img src="https://i.imgur.com/6ANzHOx.jpg" alt="Toblerone">
       <p>Toblerone</p>
+      <button onclick="addToCart('Toblerone')">Add to Cart</button>
     </div>
     <div class="product">
-      <img src="https://i.imgur.com/ak59bGC.jpg" alt="Dark Chocolate">
+      <img src="https://i.imgur.com/SbR0rR1.jpg" alt="Dark Chocolate">
       <p>Dark Chocolate</p>
+      <button onclick="addToCart('Dark Chocolate')">Add to Cart</button>
     </div>
   </div>
 
-  <!-- Stationery -->
-  <div class="category">✏️ Stationery</div>
+  <h2>✏️ Stationery</h2>
   <div class="product-container">
     <div class="product">
-      <img src="https://i.imgur.com/v8YoK6J.jpg" alt="Books">
+      <img src="https://i.imgur.com/sLZuYWe.jpg" alt="Books">
       <p>Books</p>
+      <button onclick="addToCart('Books')">Add to Cart</button>
     </div>
     <div class="product">
-      <img src="https://i.imgur.com/28XtYcp.jpg" alt="Pencils">
+      <img src="https://i.imgur.com/oXHqwrA.jpg" alt="Pencils">
       <p>Pencils</p>
+      <button onclick="addToCart('Pencils')">Add to Cart</button>
     </div>
     <div class="product">
-      <img src="https://i.imgur.com/61o6ITQ.jpg" alt="Eraser">
+      <img src="https://i.imgur.com/ywNd2ek.jpg" alt="Eraser">
       <p>Eraser</p>
+      <button onclick="addToCart('Eraser')">Add to Cart</button>
     </div>
   </div>
 
-  <!-- Clothing -->
-  <div class="category">👕 Clothing</div>
+  <h2>👗 Clothing</h2>
   <div class="product-container">
     <div class="product">
-      <img src="https://i.imgur.com/GtzzcS1.jpg" alt="Women's Dress">
+      <img src="https://i.imgur.com/lHFlcC6.jpg" alt="Women's Clothing">
       <p>Women's Clothing</p>
+      <button onclick="addToCart('Women’s Clothing')">Add to Cart</button>
     </div>
     <div class="product">
-      <img src="https://i.imgur.com/SlcHaFB.jpg" alt="Men's Shirt">
-      <p>Men’s Shirt</p>
+      <img src="https://i.imgur.com/lZz26gF.jpg" alt="Men's Shirt">
+      <p>Men's Shirt</p>
+      <button onclick="addToCart('Men’s Shirt')">Add to Cart</button>
     </div>
   </div>
 
-  <!-- Checkout Section -->
-  <div class="buy-section">
-    <h2>🛍️ Checkout</h2>
-    <label>📍 Delivery Address:</label><br>
-    <textarea rows="4" placeholder="Enter your address..."></textarea><br><br>
+  <div class="checkout">
+    <h2>🧾 Checkout</h2>
+    <div id="cartItems">🛒 <strong>Cart:</strong> None</div>
+    <label for="address">📍 Delivery Address:</label><br />
+    <textarea id="address" rows="2" cols="30" placeholder="Enter your address..."></textarea><br><br>
 
     <label>💳 Payment Method:</label><br>
-    <input type="radio" name="payment" value="cod"> Cash on Delivery<br>
-    <input type="radio" name="payment" value="online"> Online Payment<br>
+    <input type="radio" name="payment" value="COD"> Cash on Delivery<br>
+    <input type="radio" name="payment" value="Online"> Online Payment<br><br>
 
-    <button>Buy Now</button>
+    <button onclick="placeOrder()" style="padding: 10px 20px; background: green; color: white; border: none; border-radius: 5px;">Buy Now</button>
   </div>
 
+  <script>
+    const cart = [];
+
+    function addToCart(item) {
+      cart.push(item);
+      document.getElementById("cartItems").innerText = "🛒 Cart: " + cart.join(", ");
+    }
+
+    function placeOrder() {
+      const address = document.getElementById("address").value.trim();
+      const paymentMethod = document.querySelector('input[name="payment"]:checked');
+
+      if (cart.length === 0) {
+        alert("Your cart is empty!");
+        return;
+      }
+
+      if (!address) {
+        alert("Please enter your delivery address.");
+        return;
+      }
+
+      if (!paymentMethod) {
+        alert("Please select a payment method.");
+        return;
+      }
+
+      alert("✅ Order placed successfully!\n\nItems: " + cart.join(", ") + "\nAddress: " + address + "\nPayment: " + paymentMethod.value);
+    }
+  </script>
 </body>
 </html>
