@@ -1,173 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FastKart</title>
+  <meta charset="UTF-8">
+  <title>FastKart - Product Delivery</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f5f5f5;
+      margin: 20px;
+      background: #f2f2f2;
     }
-    header {
-      background-color: #111;
-      color: white;
-      padding: 15px 30px;
+
+    h1, h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    .category {
+      margin: 40px 0 20px;
+      font-size: 24px;
+      color: #444;
+      border-bottom: 2px solid #ccc;
+      padding-bottom: 5px;
+    }
+
+    .product-container {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
     }
-    .logo {
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-    nav a {
-      color: white;
-      margin-left: 20px;
-      text-decoration: none;
-    }
+
     .product {
       background: white;
+      padding: 10px;
       border-radius: 10px;
-      padding: 20px;
-      margin: 20px;
+      width: 180px;
       text-align: center;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
     }
+
     .product img {
-      width: 120px;
-      height: 120px;
+      width: 100px;
+      height: 100px;
       object-fit: cover;
-      border-radius: 8px;
     }
-    button {
-      background-color: black;
+
+    .buy-section {
+      margin: 40px auto;
+      max-width: 400px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .buy-section textarea {
+      width: 100%;
+      padding: 8px;
+    }
+
+    .buy-section button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background: green;
       color: white;
       border: none;
-      padding: 10px 15px;
-      margin-top: 10px;
-      border-radius: 5px;
       cursor: pointer;
-    }
-    .checkout {
-      background: white;
-      margin: 30px;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    textarea {
-      width: 100%;
-      border-radius: 5px;
-      padding: 8px;
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="logo">🚚 FastKart</div>
-    <nav>
-      <a href="#">Home</a>
-      <a href="#">Cart</a>
-    </nav>
-  </header>
 
-  <!-- Products -->
-  <div class="product">
-    <img src="https://i.imgur.com/edwVvRu.jpg" alt="Lipstick">
-    <h3>Lipstick</h3>
-    <p>₹120</p>
-    <button>Add to Cart</button>
+  <h1>🛒 Welcome to FastKart</h1>
+
+  <!-- Beauty Products -->
+  <div class="category">💄 Beauty Products</div>
+  <div class="product-container">
+    <div class="product">
+      <img src="https://i.imgur.com/L5lK45P.jpg" alt="Lipstick">
+      <p>Lipstick</p>
+    </div>
+    <div class="product">
+      <img src="https://i.imgur.com/Olnb2kM.jpg" alt="Shampoo">
+      <p>Shampoo</p>
+    </div>
+    <div class="product">
+      <img src="https://i.imgur.com/k3w2YUZ.jpg" alt="Facial Kit">
+      <p>Facial Kit</p>
+    </div>
   </div>
 
-  <div class="product">
-    <img src="https://i.imgur.com/7MMLXCu.jpg" alt="Shampoo">
-    <h3>Shampoo</h3>
-    <p>₹180</p>
-    <button>Add to Cart</button>
+  <!-- Food Items -->
+  <div class="category">🍜 Food Items</div>
+  <div class="product-container">
+    <div class="product">
+      <img src="https://i.imgur.com/L9NlvYw.jpg" alt="Cup Noodles">
+      <p>Cup Noodles</p>
+    </div>
+    <div class="product">
+      <img src="https://i.imgur.com/yBU8fO3.jpg" alt="Maggie">
+      <p>Maggie</p>
+    </div>
   </div>
 
-  <div class="product">
-    <img src="https://i.imgur.com/ZBXp5Tx.jpg" alt="Facial Kit">
-    <h3>Facial Kit</h3>
-    <p>₹299</p>
-    <button>Add to Cart</button>
+  <!-- Chocolates -->
+  <div class="category">🍫 Chocolates</div>
+  <div class="product-container">
+    <div class="product">
+      <img src="https://i.imgur.com/xb3c9Pa.jpg" alt="Toblerone">
+      <p>Toblerone</p>
+    </div>
+    <div class="product">
+      <img src="https://i.imgur.com/ak59bGC.jpg" alt="Dark Chocolate">
+      <p>Dark Chocolate</p>
+    </div>
   </div>
 
-  <div class="product">
-    <img src="https://i.imgur.com/IocKDkK.jpg" alt="Cup Noodles">
-    <h3>Cup Noodles</h3>
-    <p>₹50</p>
-    <button>Add to Cart</button>
+  <!-- Stationery -->
+  <div class="category">✏️ Stationery</div>
+  <div class="product-container">
+    <div class="product">
+      <img src="https://i.imgur.com/v8YoK6J.jpg" alt="Books">
+      <p>Books</p>
+    </div>
+    <div class="product">
+      <img src="https://i.imgur.com/28XtYcp.jpg" alt="Pencils">
+      <p>Pencils</p>
+    </div>
+    <div class="product">
+      <img src="https://i.imgur.com/61o6ITQ.jpg" alt="Eraser">
+      <p>Eraser</p>
+    </div>
   </div>
 
-  <div class="product">
-    <img src="https://i.imgur.com/tR8Ihfs.jpg" alt="Maggie">
-    <h3>Maggie</h3>
-    <p>₹15</p>
-    <button>Add to Cart</button>
-  </div>
-
-  <div class="product">
-    <img src="https://i.imgur.com/IzwzK2E.jpg" alt="Toblerone">
-    <h3>Toblerone</h3>
-    <p>₹200</p>
-    <button>Add to Cart</button>
-  </div>
-
-  <div class="product">
-    <img src="https://i.imgur.com/LYSIl7V.jpg" alt="Dark Chocolate">
-    <h3>Dark Chocolate</h3>
-    <p>₹150</p>
-    <button>Add to Cart</button>
-  </div>
-
-  <div class="product">
-    <img src="https://i.imgur.com/RB1aaLq.jpg" alt="Books">
-    <h3>Books</h3>
-    <p>₹350</p>
-    <button>Add to Cart</button>
-  </div>
-
-  <div class="product">
-    <img src="https://i.imgur.com/y9pjJdu.jpg" alt="Pencils">
-    <h3>Pencil Set</h3>
-    <p>₹60</p>
-    <button>Add to Cart</button>
-  </div>
-
-  <div class="product">
-    <img src="https://i.imgur.com/TM81CV1.jpg" alt="Eraser">
-    <h3>Eraser</h3>
-    <p>₹10</p>
-    <button>Add to Cart</button>
-  </div>
-
-  <div class="product">
-    <img src="https://i.imgur.com/bkT3n2L.jpg" alt="Women's Clothing">
-    <h3>Women's Kurti</h3>
-    <p>₹999</p>
-    <button>Add to Cart</button>
-  </div>
-
-  <div class="product">
-    <img src="https://i.imgur.com/hRYRL1s.jpg" alt="Men's Shirt">
-    <h3>Men's Shirt</h3>
-    <p>₹799</p>
-    <button>Add to Cart</button>
+  <!-- Clothing -->
+  <div class="category">👕 Clothing</div>
+  <div class="product-container">
+    <div class="product">
+      <img src="https://i.imgur.com/GtzzcS1.jpg" alt="Women's Dress">
+      <p>Women's Clothing</p>
+    </div>
+    <div class="product">
+      <img src="https://i.imgur.com/SlcHaFB.jpg" alt="Men's Shirt">
+      <p>Men’s Shirt</p>
+    </div>
   </div>
 
   <!-- Checkout Section -->
-  <div class="checkout">
-    <h2>Checkout</h2>
-    <label for="address">Delivery Address:</label><br>
-    <textarea id="address" placeholder="Enter your delivery address here..."></textarea><br><br>
+  <div class="buy-section">
+    <h2>🛍️ Checkout</h2>
+    <label>📍 Delivery Address:</label><br>
+    <textarea rows="4" placeholder="Enter your address..."></textarea><br><br>
 
-    <label>Payment Method:</label><br>
+    <label>💳 Payment Method:</label><br>
     <input type="radio" name="payment" value="cod"> Cash on Delivery<br>
-    <input type="radio" name="payment" value="online"> Online Payment<br><br>
+    <input type="radio" name="payment" value="online"> Online Payment<br>
 
     <button>Buy Now</button>
   </div>
