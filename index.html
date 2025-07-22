@@ -2,232 +2,170 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>FastKart</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FastKart - Product Delivery App</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f8f8f8;
-      margin: 0;
-      padding: 0;
-    }
-
-    header {
-      background-color: #ff4d4d;
       padding: 20px;
-      color: white;
+      background-color: #f4f4f4;
+    }
+
+    h1 {
       text-align: center;
-      position: relative;
     }
 
-    .cart-count {
-      position: absolute;
-      top: 20px;
-      right: 30px;
-      font-size: 16px;
-      background: white;
-      color: black;
-      padding: 5px 10px;
-      border-radius: 20px;
-    }
-
-    .container {
-      max-width: 960px;
-      margin: 20px auto;
-      padding: 0 20px;
+    .cart {
+      text-align: right;
+      margin-bottom: 20px;
+      font-weight: bold;
     }
 
     .product-container {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 20px;
-      justify-content: center;
     }
 
-    .product-card {
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      width: 200px;
-      padding: 10px;
+    .product {
+      background-color: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       text-align: center;
     }
 
-    .product-card img {
-      max-width: 100%;
-      height: 120px;
-      object-fit: contain;
+    .product img {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
     }
 
-    .product-card button {
-      background-color: #ff4d4d;
-      color: white;
+    button {
+      padding: 8px 15px;
+      margin: 5px;
       border: none;
-      padding: 10px;
-      margin-top: 10px;
-      cursor: pointer;
+      background-color: #28a745;
+      color: white;
       border-radius: 5px;
+      cursor: pointer;
     }
 
-    .checkout {
-      background: white;
-      margin-top: 40px;
+    .buy-section {
+      margin-top: 30px;
       padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
-    input, select, .buy-btn {
-      width: 100%;
+    input, select {
       padding: 10px;
       margin: 10px 0;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-
-    .buy-btn {
-      background-color: green;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-
-    .buy-btn:hover {
-      background-color: darkgreen;
+      width: 100%;
+      box-sizing: border-box;
     }
   </style>
 </head>
 <body>
+  <h1>🛒 FastKart</h1>
+  <div class="cart" id="cartCount">Cart: 0</div>
 
-  <header>
-    <h1>🛒 FastKart</h1>
-    <p>Your one-stop delivery shop</p>
-    <div class="cart-count" id="cartCount">Cart: 0</div>
-  </header>
-
-  <div class="container">
-    <h2>Our Products</h2>
-    <div class="product-container" id="productList">
-
-      <!-- Product Cards -->
-      <div class="product-card">
-        <img src="lipstick.jpg" alt="Lipstick">
-        <h3>Lipstick</h3>
-        <p>₹199</p>
-        <button onclick="addToCart('Lipstick')">Add to Cart</button>
-      </div>
-
-      <div class="product-card">
-        <img src="shampoo.jpg" alt="Shampoo">
-        <h3>Shampoo</h3>
-        <p>₹149</p>
-        <button onclick="addToCart('Shampoo')">Add to Cart</button>
-      </div>
-
-      <div class="product-card">
-        <img src="facialkit.jpg" alt="Facial Kit">
-        <h3>Facial Kit</h3>
-        <p>₹349</p>
-        <button onclick="addToCart('Facial Kit')">Add to Cart</button>
-      </div>
-
-      <div class="product-card">
-        <img src="maggi.jpg" alt="Maggi">
-        <h3>Maggi</h3>
-        <p>₹40</p>
-        <button onclick="addToCart('Maggi')">Add to Cart</button>
-      </div>
-
-      <div class="product-card">
-        <img src="toblerone.jpg" alt="Toblerone">
-        <h3>Toblerone</h3>
-        <p>₹120</p>
-        <button onclick="addToCart('Toblerone')">Add to Cart</button>
-      </div>
-
-      <div class="product-card">
-        <img src="book.jpg" alt="Book">
-        <h3>Book</h3>
-        <p>₹250</p>
-        <button onclick="addToCart('Book')">Add to Cart</button>
-      </div>
-
-      <div class="product-card">
-        <img src="pencil.jpg" alt="Pencil">
-        <h3>Pencil</h3>
-        <p>₹10</p>
-        <button onclick="addToCart('Pencil')">Add to Cart</button>
-      </div>
-
-      <div class="product-card">
-        <img src="Men's_tshirt.jpg" alt="Men's T-Shirt">
-        <h3>Men's T-Shirt</h3>
-        <p>₹499</p>
-        <button onclick="addToCart('Men\'s T-Shirt')">Add to Cart</button>
-      </div>
-
-      <div class="product-card">
-        <img src="women's_dress.jpg" alt="Women's Dress">
-        <h3>Women's Dress</h3>
-        <p>₹699</p>
-        <button onclick="addToCart('Women\'s Dress')">Add to Cart</button>
-      </div>
-
+  <div class="product-container">
+    <div class="product">
+      <img src="lipstick.jpg" alt="Lipstick" />
+      <h3>Lipstick</h3>
+      <button onclick='addToCart(this)'>Add to Cart</button>
     </div>
-
-    <div class="checkout">
-      <h2>Checkout</h2>
-      <input type="text" id="address" placeholder="Enter Delivery Address">
-      <select id="paymentMethod">
-        <option selected disabled value="">Select Payment Method</option>
-        <option value="cod">Cash on Delivery</option>
-        <option value="online">Online Payment</option>
-      </select>
-      <button class="buy-btn" onclick="buyNow()">Buy Now</button>
+    <div class="product">
+      <img src="shampoo.jpg" alt="Shampoo" />
+      <h3>Shampoo</h3>
+      <button onclick='addToCart(this)'>Add to Cart</button>
+    </div>
+    <div class="product">
+      <img src="facialkit.jpg" alt="Facial Kit" />
+      <h3>Facial Kit</h3>
+      <button onclick='addToCart(this)'>Add to Cart</button>
+    </div>
+    <div class="product">
+      <img src="maggi.jpg" alt="Maggi" />
+      <h3>Maggi</h3>
+      <button onclick='addToCart(this)'>Add to Cart</button>
+    </div>
+    <div class="product">
+      <img src="toblerone.jpg" alt="Toblerone" />
+      <h3>Toblerone</h3>
+      <button onclick='addToCart(this)'>Add to Cart</button>
+    </div>
+    <div class="product">
+      <img src="book.jpg" alt="Books" />
+      <h3>Books</h3>
+      <button onclick='addToCart(this)'>Add to Cart</button>
+    </div>
+    <div class="product">
+      <img src="pencil.jpg" alt="Pencils" />
+      <h3>Pencils</h3>
+      <button onclick='addToCart(this)'>Add to Cart</button>
+    </div>
+    <div class="product">
+      <img src="Men's_tshirt.jpg" alt="Men's T-Shirt" />
+      <h3>Men's T-Shirt</h3>
+      <button onclick='addToCart(this)'>Add to Cart</button>
+    </div>
+    <div class="product">
+      <img src="women's_dress.jpg" alt="Women's Dress" />
+      <h3>Women's Dress</h3>
+      <button onclick='addToCart(this)'>Add to Cart</button>
     </div>
   </div>
 
-  <script>
-    let cart = [];
+  <div class="buy-section">
+    <h2>Complete Your Purchase</h2>
+    <input type="text" id="address" placeholder="Enter delivery address" />
+    <select id="payment">
+      <option value="COD">Cash on Delivery</option>
+      <option value="Online">Online Payment</option>
+    </select>
+    <button onclick="buyNow()">Buy Now</button>
+  </div>
 
-    function addToCart(item) {
-      cart.push(item);
-      document.getElementById('cartCount').innerText = `Cart: ${cart.length}`;
-      alert(`${item} added to cart!`);
+  <script>
+    const cart = [];
+
+    function addToCart(button) {
+      const itemName = button.parentElement.querySelector("h3").innerText;
+      cart.push(itemName);
+      document.getElementById("cartCount").innerText = "Cart: " + cart.length;
+      alert(itemName + " added to cart!");
     }
 
     function buyNow() {
-      const address = document.getElementById('address').value.trim();
-      const payment = document.getElementById('paymentMethod').value;
+      const address = document.getElementById("address").value;
+      const payment = document.getElementById("payment").value;
 
       if (cart.length === 0) {
-        alert("❌ Your cart is empty!");
+        alert("Cart is empty!");
         return;
       }
 
       if (!address) {
-        alert("❌ Please enter a delivery address.");
+        alert("Please enter your delivery address.");
         return;
       }
 
-      if (!payment) {
-        alert("❌ Please select a payment method.");
-        return;
-      }
-
-      let paymentMsg = payment === 'cod'
-        ? '📦 Your order will be delivered with Cash on Delivery!'
-        : '💳 Proceeding to online payment... (simulated)';
-
-      alert(`✅ Order placed successfully!\n\n🛍️ Items: ${cart.join(', ')}\n🏠 Address: ${address}\n💰 Payment: ${payment.toUpperCase()}\n\n${paymentMsg}`);
-
-      // Reset everything
-      cart = [];
-      document.getElementById('cartCount').innerText = 'Cart: 0';
-      document.getElementById('address').value = '';
-      document.getElementById('paymentMethod').selectedIndex = 0;
+      alert(`Order placed for ${cart.length} item(s).
+Address: ${address}
+Payment method: ${payment}`);
+      
+      // Optionally clear cart
+      cart.length = 0;
+      document.getElementById("cartCount").innerText = "Cart: 0";
+      document.getElementById("address").value = "";
     }
   </script>
-
 </body>
 </html>
+
+        
+       
+  
