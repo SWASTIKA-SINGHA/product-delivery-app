@@ -2,164 +2,175 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FastKart - Product Delivery</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FastKart</title>
   <style>
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      background: #f5f5f5;
     }
     header {
       background-color: #111;
-      color: #fff;
-      padding: 1rem;
+      color: white;
+      padding: 15px 30px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    header h1 {
-      margin: 0;
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
     }
     nav a {
-      color: #fff;
-      margin-left: 1rem;
+      color: white;
+      margin-left: 20px;
       text-decoration: none;
-    }
-    .container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-      padding: 1rem;
     }
     .product {
       background: white;
-      padding: 1rem;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 20px;
+      margin: 20px;
       text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
     .product img {
-      width: 100%;
-      height: 150px;
-      object-fit: contain;
-      margin-bottom: 0.5rem;
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 8px;
     }
-    .product h3 {
-      margin: 0.5rem 0;
-    }
-    .product p {
-      margin: 0.2rem 0;
-    }
-    .product button {
-      background-color: #111;
-      color: #fff;
+    button {
+      background-color: black;
+      color: white;
       border: none;
-      padding: 0.5rem 1rem;
+      padding: 10px 15px;
+      margin-top: 10px;
       border-radius: 5px;
       cursor: pointer;
+    }
+    .checkout {
+      background: white;
+      margin: 30px;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    textarea {
+      width: 100%;
+      border-radius: 5px;
+      padding: 8px;
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>🚛 FastKart</h1>
+    <div class="logo">🚚 FastKart</div>
     <nav>
       <a href="#">Home</a>
       <a href="#">Cart</a>
     </nav>
   </header>
 
-  <div class="container">
-    <!-- 🧺 Default Product -->
-    <div class="product">
-      <img src="https://via.placeholder.com/150" alt="Product 1" />
-      <h3>Apple</h3>
-      <p>₹49 / kg</p>
-      <button>Add to Cart</button>
-    </div>
-
-    <!-- 💄 Beauty Products -->
-    <div class="product">
-      <img src="https://via.placeholder.com/150?text=Lipstick" alt="Lipstick" />
-      <h3>Lipstick</h3>
-      <p>₹120</p>
-      <button>Add to Cart</button>
-    </div>
-    <div class="product">
-      <img src="https://via.placeholder.com/150?text=Shampoo" alt="Shampoo" />
-      <h3>Shampoo</h3>
-      <p>₹180</p>
-      <button>Add to Cart</button>
-    </div>
-    <div class="product">
-      <img src="https://via.placeholder.com/150?text=Facial+Kit" alt="Facial Kit" />
-      <h3>Facial Kit</h3>
-      <p>₹299</p>
-      <button>Add to Cart</button>
-    </div>
-
-    <!-- 🍜 Food Items -->
-    <div class="product">
-      <img src="https://via.placeholder.com/150?text=Cup+Noodles" alt="Cup Noodles" />
-      <h3>Cup Noodles</h3>
-      <p>₹45</p>
-      <button>Add to Cart</button>
-    </div>
-    <div class="product">
-      <img src="https://via.placeholder.com/150?text=Maggi" alt="Maggi" />
-      <h3>Maggi</h3>
-      <p>₹12</p>
-      <button>Add to Cart</button>
-    </div>
-
-    <!-- 🍫 Chocolates -->
-    <div class="product">
-      <img src="https://via.placeholder.com/150?text=Toblerone" alt="Toblerone" />
-      <h3>Toblerone</h3>
-      <p>₹120</p>
-      <button>Add to Cart</button>
-    </div>
-    <div class="product">
-      <img src="https://via.placeholder.com/150?text=Dark+Chocolate" alt="Dark Chocolate" />
-      <h3>Dark Chocolate</h3>
-      <p>₹99</p>
-      <button>Add to Cart</button>
-    </div>
-
-    <!-- ✏️ Stationery Items -->
-    <div class="product">
-      <img src="https://via.placeholder.com/150?text=Books" alt="Books" />
-      <h3>Books</h3>
-      <p>₹250</p>
-      <button>Add to Cart</button>
-    </div>
-    <div class="product">
-      <img src="https://via.placeholder.com/150?text=Pencils" alt="Pencils" />
-      <h3>Pencil Pack</h3>
-      <p>₹30</p>
-      <button>Add to Cart</button>
-    </div>
-    <div class="product">
-      <img src="https://via.placeholder.com/150?text=Erasers" alt="Erasers" />
-      <h3>Erasers</h3>
-      <p>₹10</p>
-      <button>Add to Cart</button>
-    </div>
-
-    <!-- 👗 Clothing -->
-    <div class="product">
-      <img src="https://via.placeholder.com/150?text=Women+Dress" alt="Women Dress" />
-      <h3>Women's Dress</h3>
-      <p>₹799</p>
-      <button>Add to Cart</button>
-    </div>
-    <div class="product">
-      <img src="https://via.placeholder.com/150?text=Men+Shirt" alt="Men Shirt" />
-      <h3>Men's Shirt</h3>
-      <p>₹699</p>
-      <button>Add to Cart</button>
-    </div>
+  <!-- Products -->
+  <div class="product">
+    <img src="https://i.imgur.com/edwVvRu.jpg" alt="Lipstick">
+    <h3>Lipstick</h3>
+    <p>₹120</p>
+    <button>Add to Cart</button>
   </div>
+
+  <div class="product">
+    <img src="https://i.imgur.com/7MMLXCu.jpg" alt="Shampoo">
+    <h3>Shampoo</h3>
+    <p>₹180</p>
+    <button>Add to Cart</button>
+  </div>
+
+  <div class="product">
+    <img src="https://i.imgur.com/ZBXp5Tx.jpg" alt="Facial Kit">
+    <h3>Facial Kit</h3>
+    <p>₹299</p>
+    <button>Add to Cart</button>
+  </div>
+
+  <div class="product">
+    <img src="https://i.imgur.com/IocKDkK.jpg" alt="Cup Noodles">
+    <h3>Cup Noodles</h3>
+    <p>₹50</p>
+    <button>Add to Cart</button>
+  </div>
+
+  <div class="product">
+    <img src="https://i.imgur.com/tR8Ihfs.jpg" alt="Maggie">
+    <h3>Maggie</h3>
+    <p>₹15</p>
+    <button>Add to Cart</button>
+  </div>
+
+  <div class="product">
+    <img src="https://i.imgur.com/IzwzK2E.jpg" alt="Toblerone">
+    <h3>Toblerone</h3>
+    <p>₹200</p>
+    <button>Add to Cart</button>
+  </div>
+
+  <div class="product">
+    <img src="https://i.imgur.com/LYSIl7V.jpg" alt="Dark Chocolate">
+    <h3>Dark Chocolate</h3>
+    <p>₹150</p>
+    <button>Add to Cart</button>
+  </div>
+
+  <div class="product">
+    <img src="https://i.imgur.com/RB1aaLq.jpg" alt="Books">
+    <h3>Books</h3>
+    <p>₹350</p>
+    <button>Add to Cart</button>
+  </div>
+
+  <div class="product">
+    <img src="https://i.imgur.com/y9pjJdu.jpg" alt="Pencils">
+    <h3>Pencil Set</h3>
+    <p>₹60</p>
+    <button>Add to Cart</button>
+  </div>
+
+  <div class="product">
+    <img src="https://i.imgur.com/TM81CV1.jpg" alt="Eraser">
+    <h3>Eraser</h3>
+    <p>₹10</p>
+    <button>Add to Cart</button>
+  </div>
+
+  <div class="product">
+    <img src="https://i.imgur.com/bkT3n2L.jpg" alt="Women's Clothing">
+    <h3>Women's Kurti</h3>
+    <p>₹999</p>
+    <button>Add to Cart</button>
+  </div>
+
+  <div class="product">
+    <img src="https://i.imgur.com/hRYRL1s.jpg" alt="Men's Shirt">
+    <h3>Men's Shirt</h3>
+    <p>₹799</p>
+    <button>Add to Cart</button>
+  </div>
+
+  <!-- Checkout Section -->
+  <div class="checkout">
+    <h2>Checkout</h2>
+    <label for="address">Delivery Address:</label><br>
+    <textarea id="address" placeholder="Enter your delivery address here..."></textarea><br><br>
+
+    <label>Payment Method:</label><br>
+    <input type="radio" name="payment" value="cod"> Cash on Delivery<br>
+    <input type="radio" name="payment" value="online"> Online Payment<br><br>
+
+    <button>Buy Now</button>
+  </div>
+
 </body>
 </html>
