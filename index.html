@@ -6,8 +6,6 @@
   <title>FastKart - Product Delivery App</title>
   <!-- Razorpay Checkout Script -->
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-  <!-- EmailJS for sending emails -->
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <style>
     * {
       margin: 0;
@@ -709,22 +707,15 @@
     const RAZORPAY_KEY_ID = 'rzp_test_RPKqAiU4LBTA7T';
     const RAZORPAY_KEY_SECRET = '48hDJkWHxPKGzw9oRMYkKUyv';
     
-    // EmailJS Configuration
-    // You need to create a free account at https://www.emailjs.com/
-    // Then replace these with your own credentials
-    const EMAILJS_PUBLIC_KEY = 'YOUR_EMAILJS_PUBLIC_KEY'; // Get from EmailJS Dashboard
-    const EMAILJS_SERVICE_ID = 'YOUR_SERVICE_ID'; // Get from EmailJS Dashboard
-    const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID'; // Get from EmailJS Dashboard
-    
-    // Initialize EmailJS
-    (function() {
-      if (EMAILJS_PUBLIC_KEY !== 'YOUR_EMAILJS_PUBLIC_KEY') {
-        emailjs.init(EMAILJS_PUBLIC_KEY);
-        console.log('EmailJS initialized');
-      } else {
-        console.warn('EmailJS not configured. Please set up EmailJS credentials.');
-      }
-    })();
+    // Email Configuration (Direct SMTP - No external service needed)
+    // IMPORTANT: For security, use a dedicated email account for sending
+    // Email Configuration (PHP Backend)
+    const EMAIL_CONFIG = {
+      enabled: true, // Set to false to disable email sending
+      backendUrl: "send-email.php", // PHP backend file for sending emails
+      fromEmail: "swastikas857@gmail.com", // Your Gmail address
+      fromName: "FastKart Store"
+    };
     
     // Delivery charges
     let deliveryCharges = {
@@ -1060,16 +1051,15 @@
       });
     }
     
-    // Send Order Confirmation Email
+    // Send Order Confirmation Email - Direct SMTP
     function sendOrderEmail(order) {
-      // Check if EmailJS is configured
-      if (EMAILJS_PUBLIC_KEY === 'YOUR_EMAILJS_PUBLIC_KEY') {
-        console.warn('EmailJS not configured. Email will not be sent.');
-        console.log('Order details:', order);
-        return Promise.resolve({ success: false, message: 'EmailJS not configured' });
+      // Check if email is enabled
+      if (!EMAIL_CONFIG.enabled) {
+        console.log('Email sending disabled. Order details:', order);
+        return Promise.resolve({ success: false, message: 'Email disabled' });
       }
       
-      // Prepare email parameters
+      // Prepare email data
       const deliveryDate = new Date(order.estimatedDelivery).toLocaleDateString('en-IN', {
         weekday: 'long',
         year: 'numeric',
@@ -1085,42 +1075,149 @@
         minute: '2-digit'
       });
       
-      // Create items list for email
+      // Create items list HTML
       const itemsList = order.items.map(item => 
-        `${item.name} x ${item.quantity} = ₹${item.price * item.quantity}`
-      ).join('\n');
+        `<tr>
+          <td style="padding: 8px; border-bottom: 1px solid #eee;">${item.name}</td>
+          <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;">x ${item.quantity}</td>
+          <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: right;">₹${item.price * item.quantity}</td>
+        </tr>`
+      ).join('');
       
-      const templateParams = {
-        to_email: order.email,
-        to_name: order.name,
-        order_id: order.orderId,
-        order_date: orderDate,
-        customer_name: order.name,
-        customer_email: order.email,
-        customer_phone: order.phone,
-        delivery_address: order.address,
-        items_list: itemsList,
-        items_count: order.items.length,
-        subtotal: order.subtotal || order.totalAmount,
-        delivery_charge: order.deliveryCharge || 0,
-        total_amount: order.totalAmount,
-        payment_method: order.paymentMethod,
-        payment_status: order.paymentStatus,
-        payment_id: order.paymentId || 'N/A',
-        delivery_type: order.deliveryType,
-        estimated_delivery: deliveryDate
-      };
+      // Create HTML email body
+      const emailBody = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f4f4f4;">
+          <div style="background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            
+            <!-- Header -->
+            <div style="text-align: center; margin-bottom: 30px;">
+              <h1 style="color: #1a73e8; margin: 0;">🛒 FastKart</h1>
+              <h2 style="color: #28a745; margin: 10px 0;">Order Confirmed! ✓</h2>
+            </div>
+            
+            <!-- Greeting -->
+            <p style="font-size: 16px; color: #333;">Dear ${order.name},</p>
+            <p style="font-size: 14px; color: #666;">Thank you for your order! We're excited to get your items to you. 🎉</p>
+            
+            <!-- Order Details Box -->
+            <div style="background: #e8f0fe; padding: 20px; border-radius: 8px; margin: 20px 0;">
+              <h3 style="color: #1a73e8; margin-top: 0;">Order Details</h3>
+              <table style="width: 100%; font-size: 14px;">
+                <tr>
+                  <td style="padding: 5px 0;"><strong>Order ID:</strong></td>
+                  <td style="padding: 5px 0; text-align: right;">${order.orderId}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 5px 0;"><strong>Order Date:</strong></td>
+                  <td style="padding: 5px 0; text-align: right;">${orderDate}</td>
+                </tr>
+              </table>
+            </div>
+            
+            <!-- Customer Information -->
+            <div style="margin: 20px 0;">
+              <h3 style="color: #333; border-bottom: 2px solid #1a73e8; padding-bottom: 10px;">Customer Information</h3>
+              <p style="margin: 5px 0; color: #666;"><strong>Name:</strong> ${order.name}</p>
+              <p style="margin: 5px 0; color: #666;"><strong>Email:</strong> ${order.email}</p>
+              <p style="margin: 5px 0; color: #666;"><strong>Phone:</strong> ${order.phone}</p>
+              <p style="margin: 5px 0; color: #666;"><strong>Delivery Address:</strong><br>${order.address}</p>
+            </div>
+            
+            <!-- Items Ordered -->
+            <div style="margin: 20px 0;">
+              <h3 style="color: #333; border-bottom: 2px solid #1a73e8; padding-bottom: 10px;">Items Ordered (${order.items.length})</h3>
+              <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                <thead>
+                  <tr style="background: #f8f9fa;">
+                    <th style="padding: 10px; text-align: left; border-bottom: 2px solid #dee2e6;">Item</th>
+                    <th style="padding: 10px; text-align: center; border-bottom: 2px solid #dee2e6;">Qty</th>
+                    <th style="padding: 10px; text-align: right; border-bottom: 2px solid #dee2e6;">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${itemsList}
+                </tbody>
+              </table>
+            </div>
+            
+            <!-- Payment Summary -->
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+              <h3 style="color: #333; margin-top: 0;">Payment Summary</h3>
+              <table style="width: 100%; font-size: 14px;">
+                <tr>
+                  <td style="padding: 5px 0;">Subtotal:</td>
+                  <td style="padding: 5px 0; text-align: right;">₹${order.subtotal || order.totalAmount}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 5px 0;">Delivery Charge:</td>
+                  <td style="padding: 5px 0; text-align: right;">${order.deliveryCharge === 0 ? 'FREE' : '₹' + order.deliveryCharge}</td>
+                </tr>
+                <tr style="border-top: 2px solid #dee2e6;">
+                  <td style="padding: 10px 0; font-size: 18px;"><strong>Total:</strong></td>
+                  <td style="padding: 10px 0; text-align: right; font-size: 18px; color: #28a745;"><strong>₹${order.totalAmount}</strong></td>
+                </tr>
+              </table>
+            </div>
+            
+            <!-- Payment Details -->
+            <div style="margin: 20px 0;">
+              <h3 style="color: #333; border-bottom: 2px solid #1a73e8; padding-bottom: 10px;">Payment Details</h3>
+              <p style="margin: 5px 0; color: #666;"><strong>Payment Method:</strong> ${order.paymentMethod}</p>
+              <p style="margin: 5px 0; color: #666;">
+                <strong>Payment Status:</strong> 
+                <span style="background: ${order.paymentStatus === 'Paid' ? '#28a745' : '#ffc107'}; color: ${order.paymentStatus === 'Paid' ? 'white' : '#333'}; padding: 3px 10px; border-radius: 4px; font-size: 12px;">
+                  ${order.paymentStatus === 'Paid' ? '✓ PAID' : '⏳ PENDING'}
+                </span>
+              </p>
+              ${order.paymentId ? `<p style="margin: 5px 0; color: #666; font-size: 12px;"><strong>Payment ID:</strong> ${order.paymentId}</p>` : ''}
+            </div>
+            
+            <!-- Delivery Information -->
+            <div style="background: #fff3cd; padding: 20px; border-radius: 8px; border-left: 4px solid #ffc107; margin: 20px 0;">
+              <h3 style="color: #333; margin-top: 0;">🚚 Delivery Information</h3>
+              <p style="margin: 5px 0; color: #666;"><strong>Delivery Type:</strong> ${order.deliveryType || 'Standard Delivery'}</p>
+              <p style="margin: 5px 0; color: #666;"><strong>Estimated Delivery:</strong> <span style="color: #1a73e8; font-weight: bold;">${deliveryDate}</span></p>
+            </div>
+            
+            <!-- Footer -->
+            <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 2px solid #eee;">
+              <p style="color: #666; font-size: 14px;">Thank you for shopping with FastKart! 🛍️</p>
+              <p style="color: #999; font-size: 12px; margin-top: 20px;">
+                This is an automated email. Please do not reply to this message.<br>
+                For any queries, please contact us at support@fastkart.com
+              </p>
+            </div>
+            
+          </div>
+        </div>
+      `;
       
-      // Send email using EmailJS
-      return emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
-        .then(function(response) {
-          console.log('✓ Email sent successfully!', response.status, response.text);
-          return { success: true, message: 'Email sent successfully' };
+      // Send email via PHP backend
+      return fetch(EMAIL_CONFIG.backendUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          to_email: order.email,
+          subject: `Order Confirmation - ${order.orderId} | ${EMAIL_CONFIG.fromName}`,
+          body: emailBody
         })
-        .catch(function(error) {
-          console.error('✗ Email sending failed:', error);
-          return { success: false, message: 'Email sending failed', error: error };
-        });
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          console.log('✓ Email sent successfully to:', order.email);
+          return { success: true, message: 'Email sent successfully' };
+        } else {
+          console.error('✗ Email failed:', data.message);
+          return { success: false, message: data.message };
+        }
+      })
+      .catch(error => {
+        console.error('✗ Email error:', error);
+        return { success: false, message: 'Email sending failed', error: error };
+      });
     }
     
     // Process Order - Save order after payment confirmation
