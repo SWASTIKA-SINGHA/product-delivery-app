@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FastKart - Product Delivery App</title>
+  <!-- Razorpay Checkout Script -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <style>
     * {
       margin: 0;
@@ -591,7 +593,7 @@
       </div>
       <div class="order-summary-row">
         <span>Delivery:</span>
-        <span>FREE</span>
+        <span id="summaryDelivery">FREE</span>
       </div>
       <div class="order-summary-row total">
         <span>Total:</span>
@@ -599,13 +601,25 @@
       </div>
     </div>
     
-    <textarea id="address" placeholder="Enter your complete delivery address" rows="3"></textarea>
-    <input type="tel" id="phone" placeholder="Contact Phone Number" />
+    <input type="text" id="name" placeholder="Your Full Name *" required />
+    <input type="email" id="email" placeholder="Email Address *" required />
+    <input type="tel" id="phone" placeholder="Contact Phone Number *" required />
+    <textarea id="address" placeholder="Enter your complete delivery address *" rows="3" required></textarea>
+    
+    <h3 style="margin-top: 20px; margin-bottom: 10px; color: #333;">🚚 Delivery Option</h3>
+    <select id="deliveryOption" onchange="updateDeliveryCharge()">
+      <option value="standard">Standard Delivery (3-5 days) - FREE</option>
+      <option value="express">Express Delivery (1-2 days) - ₹50</option>
+      <option value="sameday">Same Day Delivery - ₹100</option>
+    </select>
+    
+    <h3 style="margin-top: 20px; margin-bottom: 10px; color: #333;">💳 Payment Method</h3>
     <select id="payment">
       <option value="COD">💰 Cash on Delivery</option>
-      <option value="Online">💳 Online Payment (UPI/Card)</option>
+      <option value="Online">💳 Online Payment (Razorpay)</option>
     </select>
-    <button onclick="placeOrder()" style="width: 100%; padding: 15px; font-size: 16px;">🎉 Place Order</button>
+    
+    <button onclick="placeOrder()" style="width: 100%; padding: 15px; font-size: 16px; margin-top: 20px;">🎉 Place Order</button>
   </div>
   </div>
 
@@ -632,6 +646,17 @@
 
   <!-- Frontend Script -->
   <script>
+    // Razorpay API Keys
+    const RAZORPAY_KEY_ID = 'rzp_test_RPKqAiU4LBTA7T';
+    const RAZORPAY_KEY_SECRET = '48hDJkWHxPKGzw9oRMYkKUyv';
+    
+    // Delivery charges
+    let deliveryCharges = {
+      standard: 0,
+      express: 50,
+      sameday: 100
+    };
+    
     // Initialize app
     function initApp() {
       loadProducts();
@@ -769,40 +794,176 @@
       cartSection.classList.toggle('active');
     }
 
-    // Update order summary
+    // Update order summary with delivery charges
     function updateOrderSummary() {
       const cartCount = backend.getCartCount();
       const cartTotal = backend.getCartTotal();
+      const deliveryOption = document.getElementById('deliveryOption')?.value || 'standard';
+      const deliveryCharge = deliveryCharges[deliveryOption];
+      const finalTotal = cartTotal + deliveryCharge;
       
       document.getElementById('summaryItems').textContent = cartCount;
       document.getElementById('summarySubtotal').textContent = `₹${cartTotal}`;
-      document.getElementById('summaryTotal').textContent = `₹${cartTotal}`;
+      
+      // Update delivery charge display
+      if (deliveryCharge === 0) {
+        document.getElementById('summaryDelivery').textContent = 'FREE';
+      } else {
+        document.getElementById('summaryDelivery').textContent = `₹${deliveryCharge}`;
+      }
+      
+      document.getElementById('summaryTotal').textContent = `₹${finalTotal}`;
+    }
+    
+    // Update delivery charge when option changes
+    function updateDeliveryCharge() {
+      updateOrderSummary();
     }
 
-    // Place order
+    // Place order - Main function
     function placeOrder() {
-      const address = document.getElementById('address').value.trim();
+      // Get all form values
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
       const phone = document.getElementById('phone').value.trim();
+      const address = document.getElementById('address').value.trim();
       const paymentMethod = document.getElementById('payment').value;
+      const deliveryOption = document.getElementById('deliveryOption').value;
       
-      if (!phone) {
-        showNotification('Please provide your contact number', 'error');
+      // Validate required fields
+      if (!name) {
+        alert('Please enter your name');
         return;
       }
       
-      const result = backend.placeOrder({
-        address: address,
-        phone: phone,
-        paymentMethod: paymentMethod
+      if (!email) {
+        alert('Please enter your email address');
+        return;
+      }
+      
+      if (!phone) {
+        alert('Please provide your contact number');
+        return;
+      }
+      
+      if (!address) {
+        alert('Please provide your delivery address');
+        return;
+      }
+      
+      // Check if cart has items
+      if (backend.getCartCount() === 0) {
+        alert('Your cart is empty! Please add items first.');
+        return;
+      }
+      
+      // Calculate final amount with delivery charges
+      const cartTotal = backend.getCartTotal();
+      const deliveryCharge = deliveryCharges[deliveryOption];
+      const finalAmount = cartTotal + deliveryCharge;
+      
+      // If COD (Cash on Delivery), process immediately
+      if (paymentMethod === 'COD') {
+        processOrder({
+          name: name,
+          email: email,
+          phone: phone,
+          address: address,
+          paymentMethod: 'COD',
+          deliveryOption: deliveryOption,
+          deliveryCharge: deliveryCharge,
+          paymentStatus: 'Pending'
+        });
+      } 
+      // If Online Payment, show Razorpay
+      else {
+        initiateRazorpayPayment(finalAmount, {
+          name: name,
+          email: email,
+          phone: phone,
+          address: address,
+          deliveryOption: deliveryOption,
+          deliveryCharge: deliveryCharge
+        });
+      }
+    }
+    
+    // Initiate Razorpay Payment
+    function initiateRazorpayPayment(amount, orderData) {
+      // Razorpay options
+      const options = {
+        key: RAZORPAY_KEY_ID, // Your Razorpay Key ID
+        amount: amount * 100, // Amount in paise (multiply by 100)
+        currency: 'INR',
+        name: 'FastKart',
+        description: 'Order Payment',
+        image: 'https://cdn-icons-png.flaticon.com/512/3144/3144456.png', // Your logo
+        
+        // Customer details
+        prefill: {
+          name: orderData.name,
+          email: orderData.email,
+          contact: orderData.phone
+        },
+        
+        // Theme color
+        theme: {
+          color: '#1a73e8'
+        },
+        
+        // Success handler - Called when payment is successful
+        handler: function(response) {
+          // Payment successful! response contains payment details
+          console.log('Payment Successful:', response);
+          
+          // Process the order with payment details
+          processOrder({
+            ...orderData,
+            paymentMethod: 'Online',
+            paymentStatus: 'Paid',
+            paymentId: response.razorpay_payment_id,
+            razorpaySignature: response.razorpay_signature
+          });
+        },
+        
+        // Modal close handler - Called when user closes payment window
+        modal: {
+          ondismiss: function() {
+            alert('Payment cancelled. Please try again.');
+          }
+        }
+      };
+      
+      // Create Razorpay instance and open payment window
+      const razorpay = new Razorpay(options);
+      razorpay.open();
+      
+      // Handle payment errors
+      razorpay.on('payment.failed', function(response) {
+        alert('Payment failed: ' + response.error.description);
       });
+    }
+    
+    // Process Order - Save order after payment confirmation
+    function processOrder(orderData) {
+      const result = backend.placeOrder(orderData);
       
       if (result.success) {
+        // Show success confirmation
         showOrderConfirmation(result.order);
+        
+        // Clear form and cart
         updateCartDisplay();
         updateOrderSummary();
-        loadProducts(); // Refresh all products to reset buttons
-        document.getElementById('address').value = '';
+        loadProducts(); // Refresh products to reset buttons
+        
+        // Clear form fields
+        document.getElementById('name').value = '';
+        document.getElementById('email').value = '';
         document.getElementById('phone').value = '';
+        document.getElementById('address').value = '';
+        document.getElementById('deliveryOption').value = 'standard';
+        document.getElementById('payment').value = 'COD';
       } else {
         alert(result.message);
       }
@@ -820,14 +981,38 @@
         day: 'numeric'
       });
       
+      // Show payment status badge
+      const paymentBadge = order.paymentStatus === 'Paid' 
+        ? '<span style="background: #28a745; color: white; padding: 5px 10px; border-radius: 5px; font-size: 12px;">✓ PAID</span>'
+        : '<span style="background: #ffc107; color: #333; padding: 5px 10px; border-radius: 5px; font-size: 12px;">⏳ PENDING</span>';
+      
       content.innerHTML = `
         <div style="padding: 20px 0;">
-          <p><strong>Order ID:</strong> ${order.orderId}</p>
-          <p><strong>Total Amount:</strong> ₹${order.totalAmount}</p>
-          <p><strong>Payment Method:</strong> ${order.paymentMethod}</p>
-          <p><strong>Delivery Address:</strong> ${order.address}</p>
-          <p><strong>Estimated Delivery:</strong> ${deliveryDate}</p>
-          <p style="margin-top: 15px; color: #666;">You will receive a confirmation message shortly.</p>
+          <p style="font-size: 18px; margin-bottom: 15px;"><strong>Order ID:</strong> ${order.orderId}</p>
+          
+          <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+            <p style="margin: 8px 0;"><strong>Customer:</strong> ${order.name || 'N/A'}</p>
+            <p style="margin: 8px 0;"><strong>Email:</strong> ${order.email || 'N/A'}</p>
+            <p style="margin: 8px 0;"><strong>Phone:</strong> ${order.phone}</p>
+          </div>
+          
+          <p style="margin: 10px 0;"><strong>Items Ordered:</strong> ${order.items.length}</p>
+          <p style="margin: 10px 0;"><strong>Subtotal:</strong> ₹${order.totalAmount - (order.deliveryCharge || 0)}</p>
+          <p style="margin: 10px 0;"><strong>Delivery Charge:</strong> ${order.deliveryCharge === 0 ? 'FREE' : '₹' + order.deliveryCharge}</p>
+          <p style="margin: 10px 0; font-size: 18px;"><strong>Total Amount:</strong> <span style="color: #28a745;">₹${order.totalAmount}</span></p>
+          
+          <p style="margin: 10px 0;"><strong>Payment Method:</strong> ${order.paymentMethod}</p>
+          <p style="margin: 10px 0;"><strong>Payment Status:</strong> ${paymentBadge}</p>
+          ${order.paymentId ? `<p style="margin: 10px 0; font-size: 12px; color: #666;"><strong>Payment ID:</strong> ${order.paymentId}</p>` : ''}
+          
+          <p style="margin: 10px 0;"><strong>Delivery Option:</strong> ${order.deliveryType || 'Standard'}</p>
+          <p style="margin: 10px 0;"><strong>Delivery Address:</strong> ${order.address}</p>
+          <p style="margin: 10px 0;"><strong>Estimated Delivery:</strong> <span style="color: #1a73e8;">${deliveryDate}</span></p>
+          
+          <div style="margin-top: 20px; padding: 15px; background: #e8f0fe; border-radius: 8px; border-left: 4px solid #1a73e8;">
+            <p style="margin: 0; color: #1a73e8; font-weight: 600;">📧 Confirmation email sent!</p>
+            <p style="margin: 5px 0 0 0; color: #666; font-size: 13px;">You will receive order updates via email and SMS.</p>
+          </div>
         </div>
       `;
       
@@ -845,14 +1030,25 @@
       } else {
         content.innerHTML = orders.map(order => {
           const orderDate = new Date(order.orderDate).toLocaleDateString('en-IN');
+          const deliveryDate = new Date(order.estimatedDelivery).toLocaleDateString('en-IN');
+          
+          // Payment status badge
+          const paymentBadge = order.paymentStatus === 'Paid' 
+            ? '<span style="background: #28a745; color: white; padding: 3px 8px; border-radius: 4px; font-size: 11px;">PAID</span>'
+            : '<span style="background: #ffc107; color: #333; padding: 3px 8px; border-radius: 4px; font-size: 11px;">PENDING</span>';
+          
           return `
             <div class="order-history-item">
-              <h4>Order #${order.orderId}</h4>
-              <p><strong>Date:</strong> ${orderDate}</p>
-              <p><strong>Items:</strong> ${order.items.length}</p>
-              <p><strong>Total:</strong> ₹${order.totalAmount}</p>
-              <p><strong>Status:</strong> <span style="color: #28a745;">${order.status}</span></p>
-              <p><strong>Payment:</strong> ${order.paymentMethod}</p>
+              <h4 style="color: #1a73e8; margin-bottom: 10px;">Order #${order.orderId}</h4>
+              <p style="margin: 5px 0;"><strong>Date:</strong> ${orderDate}</p>
+              <p style="margin: 5px 0;"><strong>Items:</strong> ${order.items.length} item(s)</p>
+              <p style="margin: 5px 0;"><strong>Subtotal:</strong> ₹${order.subtotal || order.totalAmount}</p>
+              ${order.deliveryCharge ? `<p style="margin: 5px 0;"><strong>Delivery:</strong> ₹${order.deliveryCharge}</p>` : ''}
+              <p style="margin: 5px 0;"><strong>Total:</strong> <span style="color: #28a745; font-weight: bold;">₹${order.totalAmount}</span></p>
+              <p style="margin: 5px 0;"><strong>Payment:</strong> ${order.paymentMethod} ${paymentBadge}</p>
+              <p style="margin: 5px 0;"><strong>Delivery:</strong> ${order.deliveryType || 'Standard'}</p>
+              <p style="margin: 5px 0;"><strong>Status:</strong> <span style="color: #28a745; font-weight: bold;">${order.status}</span></p>
+              <p style="margin: 5px 0;"><strong>Est. Delivery:</strong> ${deliveryDate}</p>
             </div>
           `;
         }).join('');

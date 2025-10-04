@@ -139,7 +139,7 @@ class FastKartBackend {
     return { success: true, message: 'Cart cleared', cart: [] };
   }
 
-  // Place order
+  // Place order with enhanced data
   placeOrder(orderData) {
     if (this.cart.length === 0) {
       return { success: false, message: 'Cart is empty' };
@@ -149,15 +149,55 @@ class FastKartBackend {
       return { success: false, message: 'Please provide delivery address' };
     }
 
+    // Calculate delivery days based on delivery option
+    let deliveryDays;
+    let deliveryType;
+    
+    switch(orderData.deliveryOption) {
+      case 'sameday':
+        deliveryDays = 0; // Same day
+        deliveryType = 'Same Day Delivery';
+        break;
+      case 'express':
+        deliveryDays = 1 + Math.floor(Math.random() * 2); // 1-2 days
+        deliveryType = 'Express Delivery';
+        break;
+      default:
+        deliveryDays = 3 + Math.floor(Math.random() * 3); // 3-5 days
+        deliveryType = 'Standard Delivery';
+    }
+
+    // Calculate total amount including delivery charge
+    const subtotal = this.getCartTotal();
+    const deliveryCharge = orderData.deliveryCharge || 0;
+    const totalAmount = subtotal + deliveryCharge;
+
     const order = {
       orderId: this.generateOrderId(),
       items: [...this.cart],
-      totalAmount: this.getCartTotal(),
+      totalAmount: totalAmount,
+      subtotal: subtotal,
+      deliveryCharge: deliveryCharge,
+      
+      // Customer details
+      name: orderData.name,
+      email: orderData.email,
+      phone: orderData.phone,
       address: orderData.address,
+      
+      // Delivery info
+      deliveryOption: orderData.deliveryOption || 'standard',
+      deliveryType: deliveryType,
+      
+      // Payment info
       paymentMethod: orderData.paymentMethod || 'COD',
+      paymentStatus: orderData.paymentStatus || 'Pending',
+      paymentId: orderData.paymentId || null,
+      
+      // Order status
       status: 'Placed',
       orderDate: new Date().toISOString(),
-      estimatedDelivery: this.calculateDeliveryDate()
+      estimatedDelivery: this.calculateDeliveryDate(deliveryDays)
     };
 
     // Save order to localStorage
@@ -180,11 +220,17 @@ class FastKartBackend {
     return `ORD${timestamp}${random}`;
   }
 
-  // Calculate estimated delivery date (3-5 days from now)
-  calculateDeliveryDate() {
-    const days = Math.floor(Math.random() * 3) + 3; // 3-5 days
+  // Calculate estimated delivery date based on delivery option
+  calculateDeliveryDate(days) {
     const deliveryDate = new Date();
-    deliveryDate.setDate(deliveryDate.getDate() + days);
+    
+    // If same day delivery
+    if (days === 0) {
+      deliveryDate.setHours(deliveryDate.getHours() + 6); // 6 hours from now
+    } else {
+      deliveryDate.setDate(deliveryDate.getDate() + days);
+    }
+    
     return deliveryDate.toISOString();
   }
 
