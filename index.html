@@ -636,7 +636,7 @@
       id="email" 
       placeholder="Email Address (e.g., example@gmail.com) *" 
       required 
-      pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+      pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}"
       title="Please enter a valid email address"
     />
     <div class="form-hint">📧 Order confirmation will be sent to this email</div>
@@ -889,7 +889,7 @@
 
     // Validate email format
     function isValidEmail(email) {
-      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
       return emailRegex.test(email);
     }
     
@@ -1193,6 +1193,7 @@
       `;
       
       // Send email via PHP backend
+      // Note: PHP backend only works on actual PHP server, not Live Server
       return fetch(EMAIL_CONFIG.backendUrl, {
         method: 'POST',
         headers: {
@@ -1204,19 +1205,27 @@
           body: emailBody
         })
       })
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          console.warn('⚠ PHP backend not available (are you using Live Server?). Email not sent.');
+          console.log('💡 To test emails, run: php -S localhost:8000');
+          return { success: false, message: 'PHP backend not available' };
+        }
+        return response.json();
+      })
       .then(data => {
-        if (data.success) {
+        if (data && data.success) {
           console.log('✓ Email sent successfully to:', order.email);
           return { success: true, message: 'Email sent successfully' };
         } else {
-          console.error('✗ Email failed:', data.message);
-          return { success: false, message: data.message };
+          console.warn('⚠ Email not sent:', data ? data.message : 'Backend unavailable');
+          return { success: false, message: data ? data.message : 'Backend unavailable' };
         }
       })
       .catch(error => {
-        console.error('✗ Email error:', error);
-        return { success: false, message: 'Email sending failed', error: error };
+        console.warn('⚠ Email backend not reachable:', error.message);
+        console.log('💡 Email will work when deployed to a PHP server');
+        return { success: false, message: 'Email backend not reachable', error: error };
       });
     }
     
